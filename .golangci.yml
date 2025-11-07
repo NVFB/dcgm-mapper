@@ -1,59 +1,46 @@
-linters-settings:
-  dupl:
-    threshold: 100
-  errcheck:
-    check-type-assertions: true
-    check-blank: true
-  goconst:
-    min-len: 2
-    min-occurrences: 3
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - experimental
-      - opinionated
-      - performance
-      - style
-  gocyclo:
-    min-complexity: 15
-  goimports:
-    local-prefixes: dcgm-mapper
-  misspell:
-    locale: US
-  nolintlint:
-    allow-unused: false
-    require-explanation: true
-    require-specific: true
+version: 2
 
 linters:
-  settings:
-    govet:
-      disable-all: true
-      enable:
-        - errcheck
-        - gosimple
-        - govet
-        - ineffassign
-        - staticcheck
-        - typecheck
-        - unused
-        - gofmt
-        - goimports
-        - misspell
-        - goconst
-        - gocyclo
-        - dupl
-        - gocritic
-        - shadow
+  enable:
+    - govet
+    - staticcheck
+    - errcheck
+    - unused
+    - ineffassign
+    - misspell
+    - gocritic
+    - revive
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+  misspell:
+    locale: US
+  revive:
+    confidence: 0.8
+    errorCode: 1
+    severity: warning
 
 run:
   timeout: 5m
-  go: "1.24"
+  tests: true
+  skip-dirs:
+    - "vendor"
+    - "third_party"
+  skip-files:
+    - ".*\\.gen\\.go"
+    - ".*_test\\.go"
 
 issues:
+  exclude:
+    - "should have comment"
+    - "error return value not checked"
   exclude-rules:
-    - path: _test\.go
+    - path: "_generated\\.go"
       linters:
-        - gocyclo
-        - dupl
-        - goconst
+        - errcheck
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true

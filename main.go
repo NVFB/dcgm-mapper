@@ -1,3 +1,4 @@
+// Package main provides a utility for mapping running GPU processes and managing mapping files.
 package main
 
 import (
@@ -86,10 +87,22 @@ func writeMappingFiles(dir string, processes []GPUProcess) error {
 		}
 		w := bufio.NewWriter(f)
 		for _, pid := range pids {
-			fmt.Fprintln(w, pid)
+			if _, err := fmt.Fprintln(w, pid); err != nil {
+				if cerr := f.Close(); cerr != nil {
+					log.Printf("Warning: failed to close file %s: %v", filePath, cerr)
+				}
+				return fmt.Errorf("failed to write pid to file %s: %w", filePath, err)
+			}
 		}
-		w.Flush()
-		f.Close()
+		if err := w.Flush(); err != nil {
+			if cerr := f.Close(); cerr != nil {
+				log.Printf("Warning: failed to close file %s: %v", filePath, cerr)
+			}
+			return fmt.Errorf("failed to flush writer for file %s: %w", filePath, err)
+		}
+		if cerr := f.Close(); cerr != nil {
+			log.Printf("Warning: failed to close file %s: %v", filePath, cerr)
+		}
 	}
 	return nil
 }
@@ -167,13 +180,13 @@ func main() {
 	if *daemon {
 		if err := runDaemon(ctx, *mappingDir, *interval); err != nil {
 			log.Printf("Daemon error: %v", err)
-			os.Exit(1)
+			return
 		}
 	} else {
 		// Single execution
 		if err := updateMappings(*mappingDir); err != nil {
 			log.Printf("Error: %v", err)
-			os.Exit(1)
+			return
 		}
 	}
 }
