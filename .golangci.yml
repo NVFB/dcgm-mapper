@@ -1,4 +1,4 @@
-version: 2
+version: "2"
 
 linters:
   enable:
@@ -10,37 +10,24 @@ linters:
     - misspell
     - gocritic
     - revive
-
-linters-settings:
-  errcheck:
-    check-type-assertions: true
-  misspell:
-    locale: US
-  revive:
-    confidence: 0.8
-    errorCode: 1
-    severity: warning
+  settings:
+    errcheck:
+      check-type-assertions: true
+    misspell:
+      locale: US
+    revive:
+      confidence: 0.8
+      severity: warning
 
 run:
   timeout: 5m
   tests: true
-  skip-dirs:
-    - "vendor"
-    - "third_party"
-  skip-files:
-    - ".*\\.gen\\.go"
-    - ".*_test\\.go"
-
-issues:
-  exclude:
-    - "should have comment"
-    - "error return value not checked"
-  exclude-rules:
-    - path: "_generated\\.go"
-      linters:
-        - errcheck
+  allow-parallel-runners: true
+  allow-serial-runners: true
 
 output:
-  format: colored-line-number
-  print-issued-lines: true
-  print-linter-name: true
+  formats:
+    text:
+      print-issued-lines: true
+      print-linter-name: true
+      colors: true
