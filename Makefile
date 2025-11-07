@@ -57,7 +57,7 @@ test-short:
 ## coverage: Run tests with coverage report
 coverage:
 	@echo "Running tests with coverage..."
-	$(GOTEST) -coverprofile=coverage.out ./...
+	$(GOTEST) -coverprofile=coverage.out -covermode=atomic ./...
 	$(GOCMD) tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report generated: coverage.html"
 
