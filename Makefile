@@ -15,7 +15,12 @@ GORUN=$(GOCMD) run
 # Build flags
 LDFLAGS=-ldflags "-s -w"
 
-.PHONY: all build run run-daemon test clean coverage help install fmt vet
+# Docker parameters
+DOCKER_IMAGE=ghcr.io/yourusername/dcgm-mapper
+DOCKER_TAG?=latest
+DOCKER_PLATFORM?=linux/amd64,linux/arm64
+
+.PHONY: all build run run-daemon test clean coverage help install fmt vet docker-build docker-build-multiarch docker-push docker-run docker-run-interactive
 
 # Default target
 default: help
@@ -91,6 +96,38 @@ deps:
 	@echo "Downloading dependencies..."
 	$(GOMOD) download
 	$(GOMOD) tidy
+
+## docker-build: Build Docker image
+docker-build:
+	@echo "Building Docker image $(DOCKER_IMAGE):$(DOCKER_TAG)..."
+	docker build -t $(DOCKER_IMAGE):$(DOCKER_TAG) .
+	@echo "Docker image built successfully"
+
+## docker-build-multiarch: Build multi-architecture Docker image
+docker-build-multiarch:
+	@echo "Building multi-arch Docker image $(DOCKER_IMAGE):$(DOCKER_TAG)..."
+	docker buildx build --platform $(DOCKER_PLATFORM) -t $(DOCKER_IMAGE):$(DOCKER_TAG) .
+	@echo "Multi-arch Docker image built successfully"
+
+## docker-push: Push Docker image to registry
+docker-push:
+	@echo "Pushing Docker image $(DOCKER_IMAGE):$(DOCKER_TAG)..."
+	docker push $(DOCKER_IMAGE):$(DOCKER_TAG)
+	@echo "Docker image pushed successfully"
+
+## docker-run: Run Docker container locally
+docker-run:
+	@echo "Running Docker container..."
+	docker run --rm --gpus all \
+		-v /tmp/dcgm-job-mapping:/var/lib/dcgm-mapper \
+		$(DOCKER_IMAGE):$(DOCKER_TAG)
+
+## docker-run-interactive: Run Docker container interactively
+docker-run-interactive:
+	@echo "Running Docker container interactively..."
+	docker run --rm -it --gpus all \
+		-v /tmp/dcgm-job-mapping:/var/lib/dcgm-mapper \
+		$(DOCKER_IMAGE):$(DOCKER_TAG) /bin/sh
 
 ## help: Show this help message
 help:
