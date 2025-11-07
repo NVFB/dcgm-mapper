@@ -1,9 +1,9 @@
 # DCGM Mapper
 
-[![CI](https://github.com/yourusername/dcgm-mapper/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/dcgm-mapper/actions/workflows/ci.yml)
-[![Docker](https://github.com/yourusername/dcgm-mapper/actions/workflows/docker.yml/badge.svg)](https://github.com/yourusername/dcgm-mapper/actions/workflows/docker.yml)
-[![Release](https://github.com/yourusername/dcgm-mapper/actions/workflows/release.yml/badge.svg)](https://github.com/yourusername/dcgm-mapper/actions/workflows/release.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/yourusername/dcgm-mapper)](https://goreportcard.com/report/github.com/yourusername/dcgm-mapper)
+[![CI](https://github.com/NVFB/dcgm-mapper/actions/workflows/ci.yml/badge.svg)](https://github.com/NVFB/dcgm-mapper/actions/workflows/ci.yml)
+[![Docker](https://github.com/NVFB/dcgm-mapper/actions/workflows/docker.yml/badge.svg)](https://github.com/NVFB/dcgm-mapper/actions/workflows/docker.yml)
+[![Release](https://github.com/NVFB/dcgm-mapper/actions/workflows/release.yml/badge.svg)](https://github.com/NVFB/dcgm-mapper/actions/workflows/release.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/NVFB/dcgm-mapper)](https://goreportcard.com/report/github.com/NVFB/dcgm-mapper)
 
 A lightweight tool for mapping GPU processes to their PIDs using NVIDIA's `nvidia-smi`. It can run as a one-shot command or as a daemon for continuous monitoring.
 
