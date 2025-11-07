@@ -166,12 +166,14 @@ func main() {
 	// Run in daemon mode or single-shot mode
 	if *daemon {
 		if err := runDaemon(ctx, *mappingDir, *interval); err != nil {
-			log.Fatalf("Daemon error: %v", err)
+			log.Printf("Daemon error: %v", err)
+			os.Exit(1)
 		}
 	} else {
 		// Single execution
 		if err := updateMappings(*mappingDir); err != nil {
-			log.Fatalf("Error: %v", err)
+			log.Printf("Error: %v", err)
+			os.Exit(1)
 		}
 	}
 }

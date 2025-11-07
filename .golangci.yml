@@ -18,8 +18,6 @@ linters-settings:
     min-complexity: 15
   goimports:
     local-prefixes: dcgm-mapper
-  govet:
-    check-shadowing: true
   misspell:
     locale: US
   nolintlint:
@@ -28,26 +26,29 @@ linters-settings:
     require-specific: true
 
 linters:
-  disable-all: true
-  enable:
-    - errcheck
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
-    - typecheck
-    - unused
-    - gofmt
-    - goimports
-    - misspell
-    - goconst
-    - gocyclo
-    - dupl
-    - gocritic
+  settings:
+    govet:
+      disable-all: true
+      enable:
+        - errcheck
+        - gosimple
+        - govet
+        - ineffassign
+        - staticcheck
+        - typecheck
+        - unused
+        - gofmt
+        - goimports
+        - misspell
+        - goconst
+        - gocyclo
+        - dupl
+        - gocritic
+        - shadow
 
 run:
   timeout: 5m
-  go: "1.22"
+  go: "1.24"
 
 issues:
   exclude-rules:
