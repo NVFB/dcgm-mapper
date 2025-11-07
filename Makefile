@@ -16,7 +16,7 @@ GORUN=$(GOCMD) run
 LDFLAGS=-ldflags "-s -w"
 
 # Docker parameters
-DOCKER_IMAGE=ghcr.io/yourusername/dcgm-mapper
+DOCKER_IMAGE=ghcr.io/nvfb/dcgm-mapper
 DOCKER_TAG?=latest
 DOCKER_PLATFORM?=linux/amd64,linux/arm64
 

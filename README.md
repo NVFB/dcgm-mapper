@@ -1,6 +1,7 @@
 # DCGM Mapper
 
 [![CI](https://github.com/yourusername/dcgm-mapper/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/dcgm-mapper/actions/workflows/ci.yml)
+[![Docker](https://github.com/yourusername/dcgm-mapper/actions/workflows/docker.yml/badge.svg)](https://github.com/yourusername/dcgm-mapper/actions/workflows/docker.yml)
 [![Release](https://github.com/yourusername/dcgm-mapper/actions/workflows/release.yml/badge.svg)](https://github.com/yourusername/dcgm-mapper/actions/workflows/release.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/yourusername/dcgm-mapper)](https://goreportcard.com/report/github.com/yourusername/dcgm-mapper)
 
@@ -134,12 +135,22 @@ sudo journalctl -u dcgm-mapper -f
 
 ```
 .
-├── main.go           # Main application code
-├── main_test.go      # Unit tests
-├── Makefile          # Build automation
-├── go.mod            # Go module definition
-├── .gitignore        # Git ignore patterns
-└── README.md         # This file
+├── .github/
+│   ├── workflows/           # GitHub Actions workflows
+│   ├── ISSUE_TEMPLATE/      # Issue templates
+│   └── PULL_REQUEST_TEMPLATE.md
+├── main.go                  # Main application code
+├── main_test.go             # Unit tests
+├── Makefile                 # Build automation
+├── Dockerfile               # Docker image definition
+├── docker-compose.yml       # Docker Compose configuration
+├── .dockerignore            # Docker build exclusions
+├── go.mod                   # Go module definition
+├── .gitignore               # Git ignore patterns
+├── .golangci.yml            # Linter configuration
+├── dcgm-mapper.service      # Systemd service file
+├── README.md                # This file
+└── CONTRIBUTING.md          # Contribution guidelines
 ```
 
 ### Running Tests
