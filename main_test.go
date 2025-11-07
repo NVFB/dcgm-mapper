@@ -142,11 +142,116 @@ func TestWriteMappingFilesCreatesDirectory(t *testing.T) {
 	}
 }
 
+func TestCleanMappingFiles(t *testing.T) {
+	// Create a temporary directory for testing
+	tempDir := t.TempDir()
+
+	// Create some test files
+	testFiles := []string{"GPU-1", "GPU-2", "GPU-3"}
+	for _, fname := range testFiles {
+		fpath := filepath.Join(tempDir, fname)
+		if err := os.WriteFile(fpath, []byte("test content"), 0644); err != nil {
+			t.Fatalf("Failed to create test file: %v", err)
+		}
+	}
+
+	// Verify files exist
+	entries, err := os.ReadDir(tempDir)
+	if err != nil {
+		t.Fatalf("Failed to read temp directory: %v", err)
+	}
+	if len(entries) != 3 {
+		t.Errorf("Expected 3 files before cleanup, got %d", len(entries))
+	}
+
+	// Clean the files
+	err = cleanMappingFiles(tempDir)
+	if err != nil {
+		t.Fatalf("cleanMappingFiles() error = %v", err)
+	}
+
+	// Verify files were removed
+	entries, err = os.ReadDir(tempDir)
+	if err != nil {
+		t.Fatalf("Failed to read temp directory: %v", err)
+	}
+	if len(entries) != 0 {
+		t.Errorf("Expected 0 files after cleanup, got %d", len(entries))
+	}
+}
+
+func TestCleanMappingFilesNonExistentDir(t *testing.T) {
+	// Test cleaning a directory that doesn't exist
+	tempDir := t.TempDir()
+	nonExistentDir := filepath.Join(tempDir, "does-not-exist")
+
+	// Should not error
+	err := cleanMappingFiles(nonExistentDir)
+	if err != nil {
+		t.Errorf("cleanMappingFiles() should not error on non-existent directory, got: %v", err)
+	}
+}
+
+func TestWriteMappingFilesCleansOldFiles(t *testing.T) {
+	// Create a temporary directory for testing
+	tempDir := t.TempDir()
+
+	// First write: create files for GPU-1 and GPU-2
+	processes1 := []GPUProcess{
+		{GPU: "GPU-1", PID: "100"},
+		{GPU: "GPU-2", PID: "200"},
+	}
+	err := writeMappingFiles(tempDir, processes1)
+	if err != nil {
+		t.Fatalf("First writeMappingFiles() error = %v", err)
+	}
+
+	// Verify two files exist
+	entries, err := os.ReadDir(tempDir)
+	if err != nil {
+		t.Fatalf("Failed to read temp directory: %v", err)
+	}
+	if len(entries) != 2 {
+		t.Errorf("Expected 2 files after first write, got %d", len(entries))
+	}
+
+	// Second write: create file for GPU-3 only
+	processes2 := []GPUProcess{
+		{GPU: "GPU-3", PID: "300"},
+	}
+	err = writeMappingFiles(tempDir, processes2)
+	if err != nil {
+		t.Fatalf("Second writeMappingFiles() error = %v", err)
+	}
+
+	// Verify only one file exists (GPU-3) and old files were cleaned
+	entries, err = os.ReadDir(tempDir)
+	if err != nil {
+		t.Fatalf("Failed to read temp directory: %v", err)
+	}
+	if len(entries) != 1 {
+		t.Errorf("Expected 1 file after second write, got %d", len(entries))
+	}
+	if entries[0].Name() != "GPU-3" {
+		t.Errorf("Expected GPU-3 file, got %s", entries[0].Name())
+	}
+
+	// Verify GPU-1 and GPU-2 were removed
+	gpu1File := filepath.Join(tempDir, "GPU-1")
+	if _, err := os.Stat(gpu1File); !os.IsNotExist(err) {
+		t.Error("GPU-1 file should have been removed")
+	}
+	gpu2File := filepath.Join(tempDir, "GPU-2")
+	if _, err := os.Stat(gpu2File); !os.IsNotExist(err) {
+		t.Error("GPU-2 file should have been removed")
+	}
+}
+
 // TestGetGPUProcesses tests the getGPUProcesses function
 // This test will be skipped if nvidia-smi is not available
 func TestGetGPUProcesses(t *testing.T) {
 	processes, err := getGPUProcesses()
-	
+
 	// If nvidia-smi is not available, skip the test
 	if err != nil {
 		if strings.Contains(err.Error(), "executable file not found") ||
@@ -177,4 +282,3 @@ func TestGetGPUProcesses(t *testing.T) {
 		}
 	}
 }
-
